@@ -142,13 +142,14 @@ TORCH_LIBRARY_EXPAND(TORCH_EXTENSION_NAME, ops) {
            &fused_add_rms_norm_static_fp8_quant);
 
   // Fused Layernorm + Quant kernels
+#if 0
   ops.def(
       "rms_norm_dynamic_per_token_quant(Tensor! result, Tensor input, "
       "Tensor weight, Tensor! scale, float epsilon, "
       "Tensor? scale_ub, Tensor!? residual) -> ()");
   ops.impl("rms_norm_dynamic_per_token_quant", torch::kCUDA,
            &rms_norm_dynamic_per_token_quant);
-
+#endif
   // Rotary embedding
   // Apply GPT-NeoX or GPT-J style rotary embedding to query and key.
   ops.def(
@@ -168,6 +169,30 @@ TORCH_LIBRARY_EXPAND(TORCH_EXTENSION_NAME, ops) {
   ops.impl("batched_rotary_embedding", torch::kCUDA, &batched_rotary_embedding);
 
   // Quantization ops
+
+  // Check if cutlass scaled_mm is supported for CUDA devices of the given
+  // capability
+  ops.def("cutlass_scaled_mm_supports_fp8(int cuda_device_capability) -> bool");
+  ops.impl("cutlass_scaled_mm_supports_fp8", &cutlass_scaled_mm_supports_fp8);
+
+  // Check if cutlass scaled_mm supports block quantization (used by DeepSeekV3)
+  ops.def(
+      "cutlass_scaled_mm_supports_block_fp8(int cuda_device_capability) -> "
+      "bool");
+  ops.impl("cutlass_scaled_mm_supports_block_fp8",
+           &cutlass_scaled_mm_supports_block_fp8);
+  // Check if cutlass_scaled_mm_fp4 is supported for CUDA devices
+  // of the given capability
+  ops.def("cutlass_scaled_mm_supports_fp4(int cuda_device_capability) -> bool");
+  ops.impl("cutlass_scaled_mm_supports_fp4", &cutlass_scaled_mm_supports_fp4);
+  // Check if cutlass sparse scaled_mm is supported for CUDA devices of the
+  // given capability
+  ops.def(
+    "cutlass_sparse_scaled_mm_supported(int cuda_device_capability) -> bool");
+  ops.impl("cutlass_sparse_scaled_mm_supported",
+    &cutlass_sparse_scaled_mm_supported);
+
+#if 0
 #ifndef USE_ROCM
   // Quantized GEMM for AQLM.
   ops.def(
@@ -360,25 +385,6 @@ TORCH_LIBRARY_EXPAND(TORCH_EXTENSION_NAME, ops) {
       {stride_tag});
   ops.impl("cutlass_scaled_mm_azp", torch::kCUDA, &cutlass_scaled_mm_azp);
 
-  // Check if cutlass scaled_mm is supported for CUDA devices of the given
-  // capability
-  ops.def("cutlass_scaled_mm_supports_fp8(int cuda_device_capability) -> bool");
-  ops.impl("cutlass_scaled_mm_supports_fp8", &cutlass_scaled_mm_supports_fp8);
-
-  // Check if cutlass scaled_mm supports block quantization (used by DeepSeekV3)
-  ops.def(
-      "cutlass_scaled_mm_supports_block_fp8(int cuda_device_capability) -> "
-      "bool");
-  ops.impl("cutlass_scaled_mm_supports_block_fp8",
-           &cutlass_scaled_mm_supports_block_fp8);
-
-  // Check if cutlass sparse scaled_mm is supported for CUDA devices of the
-  // given capability
-  ops.def(
-      "cutlass_sparse_scaled_mm_supported(int cuda_device_capability) -> bool");
-  ops.impl("cutlass_sparse_scaled_mm_supported",
-           &cutlass_sparse_scaled_mm_supported);
-
   // CUTLASS sparse GEMM, supporting symmetric per-tensor or per-row/column
   // quantization, as well as bias
   ops.def(
@@ -434,10 +440,6 @@ TORCH_LIBRARY_EXPAND(TORCH_EXTENSION_NAME, ops) {
       "                 Tensor! output_scale, Tensor input_scale) -> ()");
   ops.impl("scaled_fp4_quant", torch::kCUDA, &scaled_fp4_quant);
 
-  // Check if cutlass_scaled_mm_fp4 is supported for CUDA devices
-  // of the given capability
-  ops.def("cutlass_scaled_mm_supports_fp4(int cuda_device_capability) -> bool");
-  ops.impl("cutlass_scaled_mm_supports_fp4", &cutlass_scaled_mm_supports_fp4);
 #endif
 
   // Quantized GEMM for GPTQ.
@@ -505,7 +507,9 @@ TORCH_LIBRARY_EXPAND(TORCH_EXTENSION_NAME, ops) {
       "SymInt n, SymInt group_size, SymInt sm_count, SymInt sm_version, SymInt "
       "CUBLAS_M_THRESHOLD, bool has_zp, bool n32k16_reorder) -> Tensor");
   //  conditionally compiled so impl in source file
-#endif
+  #endif
+  
+#endif // if 0, quantilization
 }
 
 TORCH_LIBRARY_EXPAND(CONCAT(TORCH_EXTENSION_NAME, _cache_ops), cache_ops) {

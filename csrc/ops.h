@@ -67,7 +67,7 @@ void fused_add_rms_norm_static_fp8_quant(torch::Tensor& out,
                                          torch::Tensor& residual,
                                          torch::Tensor& weight,
                                          torch::Tensor& scale, double epsilon);
-
+#if 0
 void rms_norm_dynamic_per_token_quant(torch::Tensor& out,
                                       torch::Tensor const& input,
                                       torch::Tensor const& weight,
@@ -75,7 +75,7 @@ void rms_norm_dynamic_per_token_quant(torch::Tensor& out,
                                       double const epsilon,
                                       std::optional<torch::Tensor> scale_ub,
                                       std::optional<torch::Tensor> residual);
-
+#endif 
 void rotary_embedding(torch::Tensor& positions, torch::Tensor& query,
                       torch::Tensor& key, int64_t head_size,
                       torch::Tensor& cos_sin_cache, bool is_neox);
@@ -119,6 +119,14 @@ void advance_step_flashinfer(
     torch::Tensor& paged_kv_indices, torch::Tensor& paged_kv_indptr,
     torch::Tensor& paged_kv_last_page_len, torch::Tensor& block_table_bounds);
 
+
+bool cutlass_scaled_mm_supports_fp4(int64_t cuda_device_capability);
+bool cutlass_scaled_mm_supports_fp8(int64_t cuda_device_capability);
+bool cutlass_scaled_mm_supports_block_fp8(int64_t cuda_device_capability);
+bool cutlass_sparse_scaled_mm_supported(int64_t cuda_device_capability);
+
+#if 0
+
 #ifndef USE_ROCM
 torch::Tensor aqlm_gemm(const torch::Tensor& input, const torch::Tensor& codes,
                         const torch::Tensor& codebooks,
@@ -161,10 +169,6 @@ int64_t ggml_moe_get_block_size(int64_t type);
 
 #ifndef USE_ROCM
 
-bool cutlass_scaled_mm_supports_fp4(int64_t cuda_device_capability);
-bool cutlass_scaled_mm_supports_fp8(int64_t cuda_device_capability);
-bool cutlass_scaled_mm_supports_block_fp8(int64_t cuda_device_capability);
-
 void cutlass_scaled_fp4_mm(torch::Tensor& D, torch::Tensor const& A,
                            torch::Tensor const& B, torch::Tensor const& A_sf,
                            torch::Tensor const& B_sf,
@@ -182,8 +186,6 @@ void cutlass_scaled_mm_azp(torch::Tensor& out, torch::Tensor const& a,
                            torch::Tensor const& azp_adj,
                            std::optional<torch::Tensor> const& azp,
                            std::optional<torch::Tensor> const& bias);
-
-bool cutlass_sparse_scaled_mm_supported(int64_t cuda_device_capability);
 
 void cutlass_scaled_sparse_mm(torch::Tensor& out, torch::Tensor const& a,
                               torch::Tensor const& b, torch::Tensor const& e,
@@ -222,7 +224,7 @@ void dynamic_scaled_fp8_quant(torch::Tensor& out, torch::Tensor const& input,
 void dynamic_per_token_scaled_fp8_quant(
     torch::Tensor& out, torch::Tensor const& input, torch::Tensor& scale,
     std::optional<torch::Tensor> const& scale_ub);
-
+    
 void selective_scan_fwd(const torch::Tensor& u, const torch::Tensor& delta,
                         const torch::Tensor& A, const torch::Tensor& B,
                         const torch::Tensor& C,
@@ -250,6 +252,8 @@ void causal_conv1d_fwd(const at::Tensor& x, const at::Tensor& weight,
                        const std::optional<at::Tensor>& cache_indices,
                        const std::optional<at::Tensor>& has_initial_state,
                        bool silu_activation, int64_t pad_slot_id);
+
+#endif // if 0, quantilization
 
 #ifndef USE_ROCM
 using fptr_t = int64_t;

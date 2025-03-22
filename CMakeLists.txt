@@ -234,11 +234,11 @@ set(VLLM_EXT_SRC
   "csrc/activation_kernels.cu"
   "csrc/layernorm_kernels.cu"
   "csrc/layernorm_quant_kernels.cu"
-  "csrc/quantization/gptq/q_gemm.cu"
-  "csrc/quantization/compressed_tensors/int8_quant_kernels.cu"
-  "csrc/quantization/fp8/common.cu"
-  "csrc/quantization/fused_kernels/fused_layernorm_dynamic_per_token_quant.cu"
-  "csrc/quantization/gguf/gguf_kernel.cu"
+  # "csrc/quantization/gptq/q_gemm.cu"
+  # "csrc/quantization/compressed_tensors/int8_quant_kernels.cu"
+  # "csrc/quantization/fp8/common.cu"
+  # "csrc/quantization/fused_kernels/fused_layernorm_dynamic_per_token_quant.cu"
+  # "csrc/quantization/gguf/gguf_kernel.cu"
   "csrc/cuda_utils_kernels.cu"
   "csrc/prepare_inputs/advance_step.cu"
   "csrc/torch_bindings.cpp")
@@ -278,14 +278,14 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
   FetchContent_MakeAvailable(cutlass)
 
   list(APPEND VLLM_EXT_SRC
-    "csrc/mamba/mamba_ssm/selective_scan_fwd.cu"
-    "csrc/mamba/causal_conv1d/causal_conv1d.cu"
-    "csrc/quantization/aqlm/gemm_kernels.cu"
-    "csrc/quantization/awq/gemm_kernels.cu"
+    # "csrc/mamba/mamba_ssm/selective_scan_fwd.cu"
+    # "csrc/mamba/causal_conv1d/causal_conv1d.cu"
+    # "csrc/quantization/aqlm/gemm_kernels.cu"
+    # "csrc/quantization/awq/gemm_kernels.cu"
     "csrc/custom_all_reduce.cu"
     "csrc/permute_cols.cu"
     "csrc/quantization/cutlass_w8a8/scaled_mm_entry.cu"
-    "csrc/quantization/fp4/nvfp4_quant_entry.cu"
+    # "csrc/quantization/fp4/nvfp4_quant_entry.cu"
     "csrc/quantization/fp4/nvfp4_scaled_mm_entry.cu"
     "csrc/sparse/cutlass/sparse_scaled_mm_entry.cu"
     "csrc/cutlass_extensions/common.cpp")
@@ -310,7 +310,7 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${MARLIN_SRCS}"
       CUDA_ARCHS "${MARLIN_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${MARLIN_SRCS}")
+    # list(APPEND VLLM_EXT_SRC "${MARLIN_SRCS}")
     message(STATUS "Building Marlin kernels for archs: ${MARLIN_ARCHS}")
   else()
     message(STATUS "Not building Marlin kernels as no compatible archs found"
@@ -326,7 +326,7 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${ALLSPARK_SRCS}"
       CUDA_ARCHS "${ALLSPARK_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${ALLSPARK_SRCS}")
+    # list(APPEND VLLM_EXT_SRC "${ALLSPARK_SRCS}")
     message(STATUS "Building AllSpark kernels for archs: ${ALLSPARK_ARCHS}")
   else()
     message(STATUS "Not building AllSpark kernels as no compatible archs found"
@@ -348,10 +348,10 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${SRCS}"
       CUDA_ARCHS "${SCALED_MM_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${SRCS}")
-    list(APPEND VLLM_GPU_FLAGS "-DENABLE_SCALED_MM_SM90=1")
+    # list(APPEND VLLM_EXT_SRC "${SRCS}")
+    # list(APPEND VLLM_GPU_FLAGS "-DENABLE_SCALED_MM_SM90=1")
     # Let scaled_mm_c2x know it doesn't need to build these arches
-    list(APPEND SCALED_MM_3X_ARCHS "${SCALED_MM_ARCHS}")
+    # list(APPEND SCALED_MM_3X_ARCHS "${SCALED_MM_ARCHS}")
     message(STATUS "Building scaled_mm_c3x_sm90 for archs: ${SCALED_MM_ARCHS}")
   else()
     if (NOT ${CMAKE_CUDA_COMPILER_VERSION} VERSION_GREATER 12.0 AND SCALED_MM_ARCHS)
@@ -376,10 +376,10 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${SRCS}"
       CUDA_ARCHS "${SCALED_MM_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${SRCS}")
-    list(APPEND VLLM_GPU_FLAGS "-DENABLE_SCALED_MM_SM100=1")
+    # list(APPEND VLLM_EXT_SRC "${SRCS}")
+    # list(APPEND VLLM_GPU_FLAGS "-DENABLE_SCALED_MM_SM100=1")
     # Let scaled_mm_c2x know it doesn't need to build these arches
-    list(APPEND SCALED_MM_3X_ARCHS "${SCALED_MM_ARCHS}")
+    # list(APPEND SCALED_MM_3X_ARCHS "${SCALED_MM_ARCHS}")
     message(STATUS "Building scaled_mm_c3x_sm100 for archs: ${SCALED_MM_ARCHS}")
   else()
     if (NOT ${CMAKE_CUDA_COMPILER_VERSION} VERSION_GREATER 12.8 AND SCALED_MM_ARCHS)
@@ -405,8 +405,8 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${SRCS}"
       CUDA_ARCHS "${SCALED_MM_2X_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${SRCS}")
-    list(APPEND VLLM_GPU_FLAGS "-DENABLE_SCALED_MM_C2X=1")
+    # list(APPEND VLLM_EXT_SRC "${SRCS}")
+    # list(APPEND VLLM_GPU_FLAGS "-DENABLE_SCALED_MM_C2X=1")
     message(STATUS "Building scaled_mm_c2x for archs: ${SCALED_MM_2X_ARCHS}")
   else()
     if (SCALED_MM_3X_ARCHS)
@@ -429,8 +429,8 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${SRCS}"
       CUDA_ARCHS "${SCALED_MM_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${SRCS}")
-    list(APPEND VLLM_GPU_FLAGS "-DENABLE_SPARSE_SCALED_MM_C3X=1")
+    # list(APPEND VLLM_EXT_SRC "${SRCS}")
+    # list(APPEND VLLM_GPU_FLAGS "-DENABLE_SPARSE_SCALED_MM_C3X=1")
     message(STATUS "Building sparse_scaled_mm_c3x for archs: ${SCALED_MM_ARCHS}")
   else()
     if (NOT ${CMAKE_CUDA_COMPILER_VERSION} VERSION_GREATER 12.2 AND SCALED_MM_ARCHS)
@@ -452,8 +452,8 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     set_gencode_flags_for_srcs(
       SRCS "${SRCS}"
       CUDA_ARCHS "${FP4_ARCHS}")
-    list(APPEND VLLM_EXT_SRC "${SRCS}")
-    list(APPEND VLLM_GPU_FLAGS "-DENABLE_NVFP4=1")
+    # list(APPEND VLLM_EXT_SRC "${SRCS}")
+    # list(APPEND VLLM_GPU_FLAGS "-DENABLE_NVFP4=1")
     message(STATUS "Building NVFP4 for archs: ${FP4_ARCHS}")
   else()
     message(STATUS "Not building NVFP4 as no compatible archs were found.")
@@ -507,15 +507,15 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
 
     # Add machete generated sources
     file(GLOB MACHETE_GEN_SOURCES "csrc/quantization/machete/generated/*.cu")
-    list(APPEND VLLM_EXT_SRC ${MACHETE_GEN_SOURCES})
+    # list(APPEND VLLM_EXT_SRC ${MACHETE_GEN_SOURCES})
 
     # forward compatible
     set_gencode_flags_for_srcs(
       SRCS "${MACHETE_GEN_SOURCES}"
       CUDA_ARCHS "${MACHETE_ARCHS}")
 
-    list(APPEND VLLM_EXT_SRC
-      csrc/quantization/machete/machete_pytorch.cu)
+    # list(APPEND VLLM_EXT_SRC
+    #   csrc/quantization/machete/machete_pytorch.cu)
 
     message(STATUS "Building Machete kernels for archs: ${MACHETE_ARCHS}")
   else()
