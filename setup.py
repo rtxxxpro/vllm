@@ -149,6 +149,14 @@ class cmake_build_ext(build_ext):
             '-DVLLM_TARGET_DEVICE={}'.format(VLLM_TARGET_DEVICE),
         ]
 
+        cmake_args += ["-DCMAKE_CUDA_COMPILER=clang++"]
+        cmake_args += ["-DCMAKE_CXX_COMPILER=clang++"]
+        cmake_args += ["-DCMAKE_C_COMPILER=clang"]
+        cmake_args += ["-DCMAKE_CUDA_FLAGS=-nostdinc++ -I/home/rtx/nvidia/llvm-project/install/include/c++/v1 -I/home/rtx/nvidia/llvm-project/install/include/x86_64-unknown-linux-gnu/c++/v1 -I/home/rtx/nvidia/cccl/thrust -I/home/rtx/nvidia/cccl/libcudacxx/include -I/home/rtx/nvidia/cccl/cub --cuda-gpu-arch=sm_80 -std=c++17 -O3 -fplugin=/home/rtx/nvidia/sm-sched/smsched-pass/build/libsmsched.so -fpass-plugin=/home/rtx/nvidia/sm-sched/smsched-pass/build/libsmsched.so -mllvm -enable-dump-ir -mllvm -dump-ir-dir=./ir  -D__NVCC__ -D__CUDACC_VER_MAJOR__=12 -D__CUDACC_VER_MINOR__=4 -D__NV_NO_HOST_COMPILER_CHECK -D_ALLOW_UNSUPPORTED_LIBCPP -D_VSTD=std -Wno-invalid-specialization -Wno-unknown-warning-option"]
+        cmake_args += ["-DCMAKE_CXX_FLAGS=-nostdinc++ -I/home/rtx/nvidia/llvm-project/install/include/c++/v1 -I/home/rtx/nvidia/llvm-project/install/include/x86_64-unknown-linux-gnu/c++/v1 -D_VSTD=std -Wno-error=missing-template-arg-list-after-template-kw -Wno-invalid-specialization"]
+        cmake_args += ["-DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/cuda/lib64 -stdlib=libc++ -lc++ -lc++abi -lcudart -lcuda -lgdrapi"]
+        cmake_args += ["-DCMAKE_SHARED_LINKER_FLAGS=-L/usr/local/cuda/lib64;-stdlib=libc++;-lc++;-lc++abi;-lcudart;-lcuda;-lgdrapi"]
+
         verbose = envs.VERBOSE
         if verbose:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE=ON']

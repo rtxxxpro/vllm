@@ -193,7 +193,7 @@ __global__ void moe_wna16_gemm_kernel(
       dequant<scalar_t2, bit>(expert_qweight_tmp[tmp_k % 4], weight_half2);
 
       for (int m = 0; m < num_valid_tokens; m++) {
-        res2 = {};
+        res2 = {0};
 
 #pragma unroll
         for (int i = 0; i < 16 / bit; i++) {
@@ -295,7 +295,7 @@ torch::Tensor moe_wna16_gemm(torch::Tensor input, torch::Tensor output,
 
   int64_t EM = sorted_token_ids.size(0);
   if (size_m <= BLOCK_SIZE_M) {
-    EM = min(EM, size_m * BLOCK_SIZE_M * top_k);
+    EM = std::min(EM, size_m * BLOCK_SIZE_M * top_k);
   }
   const int num_token_blocks = (EM + BLOCK_SIZE_M - 1) / BLOCK_SIZE_M;
 

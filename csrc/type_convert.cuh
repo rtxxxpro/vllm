@@ -29,7 +29,7 @@ struct _typeConvert {
   static constexpr bool exists = false;
 };
 
-#if defined(USE_ROCM) || (defined(CUDA_VERSION) && (CUDA_VERSION >= 12000))
+// #if defined(USE_ROCM) || (defined(CUDA_VERSION) && (CUDA_VERSION >= 12000))
 // CUDA < 12.0 runs into issues with packed type conversion
 template <>
 struct _typeConvert<c10::Half> {
@@ -49,7 +49,7 @@ struct _typeConvert<c10::Half> {
   }
 };
 
-  #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
+  // #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 // CUDA_ARCH < 800 does not have BF16 support
 // TODO: Add in ROCm support once public headers handle bf16 maturely
 template <>
@@ -71,8 +71,8 @@ struct _typeConvert<c10::BFloat16> {
     return __float22bfloat162_rn(x);
   }
 };
-  #endif  // defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
-#endif    // defined(USE_ROCM) || (defined(CUDA_VERSION) && (CUDA_VERSION >=
+  // #endif  // defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
+// #endif    // defined(USE_ROCM) || (defined(CUDA_VERSION) && (CUDA_VERSION >=
           // 12000))
 
 /* Vector POD struct to generate vectorized and packed FP16/BF16 ops

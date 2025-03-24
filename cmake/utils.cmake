@@ -450,5 +450,11 @@ function (define_gpu_extension_target GPU_MOD_NAME)
     target_link_libraries(${GPU_MOD_NAME} PRIVATE ${TORCH_LIBRARIES})
   endif()
 
+  message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
+  target_link_options(${GPU_MOD_NAME} PRIVATE ${CMAKE_SHARED_LINKER_FLAGS})
+
   install(TARGETS ${GPU_MOD_NAME} LIBRARY DESTINATION ${GPU_DESTINATION} COMPONENT ${GPU_MOD_NAME})
+
+  get_target_property(LIBS ${GPU_MOD_NAME} LINK_LIBRARIES)
+  message(STATUS "Defined GPU extension target: ${GPU_MOD_NAME} with libraries: ${LIBS}")
 endfunction()

@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.26)
-
+message(STATUS "CMAKE_CUDA_COMPILER: ${CMAKE_CUDA_COMPILER}")
+message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_CUDA_FLAGS: ${CMAKE_CUDA_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
+set(CMAKE_CUDA_RUNTIME_LIBRARY "Shared")
 # When building directly using CMake, make sure you run the install step
 # (it places the .so files in the correct location).
 #
@@ -159,9 +164,9 @@ get_torch_gpu_compiler_flags(VLLM_GPU_FLAGS ${VLLM_GPU_LANG})
 #
 # Set nvcc parallelism.
 #
-if(NVCC_THREADS AND VLLM_GPU_LANG STREQUAL "CUDA")
-  list(APPEND VLLM_GPU_FLAGS "--threads=${NVCC_THREADS}")
-endif()
+# if(NVCC_THREADS AND VLLM_GPU_LANG STREQUAL "CUDA")
+#   list(APPEND VLLM_GPU_FLAGS "--threads=${NVCC_THREADS}")
+# endif()
 
 
 #
@@ -532,6 +537,8 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
   endif()
 # if CUDA endif
 endif()
+
+message(STATUS "VLLM_GPU_FLAGS: ${VLLM_GPU_FLAGS}")
 
 message(STATUS "Enabling C extension.")
 define_gpu_extension_target(

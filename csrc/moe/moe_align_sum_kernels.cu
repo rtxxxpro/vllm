@@ -304,7 +304,7 @@ void moe_align_block_size(torch::Tensor topk_ids, int64_t num_experts,
   cudaDeviceGetAttribute(&device_max_shared_mem,
                          cudaDevAttrMaxSharedMemoryPerBlockOptin, dev);
 
-  const int32_t num_thread = max((int32_t)num_experts, WARP_SIZE);
+  const int32_t num_thread = std::max((int32_t)num_experts, WARP_SIZE);
   const int32_t shared_mem_i32 =
       ((num_thread + 1) * num_experts + (num_experts + 1)) * sizeof(int32_t);
   const int32_t shared_mem_i16 =
@@ -330,7 +330,7 @@ void moe_align_block_size(torch::Tensor topk_ids, int64_t num_experts,
         topk_ids.scalar_type(), "moe_align_block_size_global_mem_kernel", [&] {
           // calc needed amount of shared mem for `tokens_cnts` and `cumsum`
           // tensors
-          const int32_t num_thread = max((int32_t)num_experts, WARP_SIZE);
+          const int32_t num_thread = std::max((int32_t)num_experts, WARP_SIZE);
 
           auto options_int = torch::TensorOptions()
                                  .dtype(torch::kInt)
