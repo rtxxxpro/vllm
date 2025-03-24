@@ -305,7 +305,10 @@ nvidia-cusolver-cu12==11.6.1.9
 nvidia-cusparse-cu12==12.3.1.170
     # via
     #   nvidia-cusolver-cu12
+<<<<<<< HEAD:requirements/test.txt
 nvidia-cusparselt-cu12==0.6.2
+=======
+>>>>>>> a206befac09832490f6e9b8b508706e5407edb12:requirements-test.txt
 nvidia-nccl-cu12==2.21.5
 nvidia-nvjitlink-cu12==12.4.127
     # via
@@ -587,9 +590,13 @@ tokenizers==0.21.0
     #   -r requirements/test.in
     #   encodec
     #   vocos
+<<<<<<< HEAD:requirements/test.txt
     # via
     #   -r requirements/test.in
     #   timm
+=======
+    # via timm
+>>>>>>> a206befac09832490f6e9b8b508706e5407edb12:requirements-test.txt
 tqdm==4.66.6
     # via
     #   datasets
@@ -613,8 +620,13 @@ transformers==4.48.2
     #   sentence-transformers
     #   transformers-stream-generator
 transformers-stream-generator==0.0.5
+<<<<<<< HEAD:requirements/test.txt
     # via -r requirements/test.in
 triton==3.2.0
+=======
+    # via -r requirements-test.in
+triton==3.1.0
+>>>>>>> a206befac09832490f6e9b8b508706e5407edb12:requirements-test.txt
 tritonclient==2.51.0
     # via
     #   -r requirements/test.in
@@ -640,7 +652,11 @@ urllib3==2.2.3
     #   requests
     #   responses
     #   tritonclient
+<<<<<<< HEAD:requirements/test.txt
     # via -r requirements/test.in
+=======
+    # via -r requirements-test.in
+>>>>>>> a206befac09832490f6e9b8b508706e5407edb12:requirements-test.txt
 vocos==0.1.0
     # via -r requirements/test.in
 word2number==1.1
